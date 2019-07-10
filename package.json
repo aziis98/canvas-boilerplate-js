@@ -1,0 +1,14 @@
+{
+  "name": "canvas-boilerplate",
+  "version": "1.0.0",
+  "description": "A Web Canvas Boilerplate Project",
+  "main": "index.html",
+  "scripts": {
+    "serve": "live-server"
+  },
+  "author": "aziis98 <antonio.delucreziis@gmail.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "live-server": "^1.2.1"
+  }
+}
