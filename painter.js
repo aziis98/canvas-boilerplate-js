@@ -8,24 +8,33 @@ export default class {
 
         const voidFn = () => {};
 
-        this.fps = definition.fps || 60;
-        this.density = definition.density || 1;
-        // this.aspectRatio = definition.aspectRatio || (16.0 / 9.0);
+        this.ups = definition.ups || 30;
 
+        this.density = definition.density || 1;
+        this.doRenderLoop = definition.doRenderLoop === undefined ? true : definition.doRenderLoop;
+        
         this.setup = definition.setup || voidFn;
         this.render = definition.render || voidFn;
         this.update = definition.update || voidFn;
+
+        // Log Render Calls
+        const _renderFn = this.render;
+        this.render = function () { 
+            console.log("render()");
+            _renderFn.apply(this, arguments);
+        }
 
         this.$canvas = document.querySelector(definition.el);
         this.getContext();
 
         this.setup();
 
-        this.loop();
+        if (this.doRenderLoop) 
+            this.loop();
 
         this.$timer = setInterval(() => {
             this.update();
-        }, 1000 / this.fps);
+        }, 1000 / this.ups);
 
         this.onResize();
         window.addEventListener('resize', this.onResize.bind(this));
@@ -48,6 +57,8 @@ export default class {
     onResize() {
         this.$canvas.width = window.innerWidth * this.density;
         this.$canvas.height = window.innerHeight * this.density;
+
+        requestAnimationFrame(() => this.render(this.getContext()));
     }
 
     loop() {

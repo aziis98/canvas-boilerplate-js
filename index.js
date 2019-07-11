@@ -1,11 +1,15 @@
 
 import Painter from "./painter.js";
+import { range, random } from "./geom/random.js";
 
 const painter = new Painter({
 
     el: 'canvas',
+    doRenderLoop: false,
 
     setup() {
+
+        this.prova = random(range(0, 100), range(0, 100));         
 
     },
     render(g) {
@@ -25,3 +29,6 @@ const painter = new Painter({
     }
 
 });
+
+window.painter = painter;
+window.random = random;
