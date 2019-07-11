@@ -1,10 +1,30 @@
 
 import point2 from "./point2.js";
 
-export function range(min, max) {
-    return { __type__: "range", from: min, to: max };
+/**
+ * @typedef Interval
+ * @property {number} min 
+ * @property {number} max 
+ */
+
+/**
+ * Creates an interval object
+ * @param {number} min
+ * @param {number} max 
+ */
+export function interval(min, max) {
+    return { __type__: "interval", min, max };
 } 
 
+/**
+ * Multimethod utility for generating random numeric structures.
+ * 
+ * See `random.typeMap` for avaiable call singatures, for now this supports:
+ * 
+ * - `random(interval(min, max))`: Generates a random number in the provided interval.
+ * 
+ * - `random(interval(minX, maxX), interval(minY, maxY))`: Generates a Point2 in the provided bounds. 
+ */
 export function random() {
     const signature = Array.prototype.map.call(arguments, o => o.__type__ || o.constructor.name || typeof(o)).join(" ");
     return (random.typeMap[signature] || random.errFn(signature)).apply(this, arguments);
@@ -15,10 +35,17 @@ random.errFn = function (signature) {
 }
 
 random.typeMap = {
-    "range": function (range) {
-        return Math.random() * (range.to - range.from) + range.from;
+    /**
+     * @param {Interval} interval 
+     */
+    "interval": function (interval) {
+        return Math.random() * (interval.max - interval.min) + interval.min;
     },
-    "range range": function (rangeX, rangeY) {
-        return point2(random(rangeX), random(rangeY));
+    /**
+     * @param {Interval} intervalX 
+     * @param {Interval} intervalY 
+     */
+    "interval interval": function (intervalX, intervalY) {
+        return point2(random(intervalX), random(intervalY));
     }
 }

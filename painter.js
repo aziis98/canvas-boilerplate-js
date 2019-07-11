@@ -10,8 +10,9 @@ export default class {
 
         this.ups = definition.ups || 30;
 
-        this.density = definition.density || 1;
+        this.canvasWidth = definition.canvasWidth;
         this.doRenderLoop = definition.doRenderLoop === undefined ? true : definition.doRenderLoop;
+        this.aspectRatio = definition.aspectRatio || 'auto';
         
         this.setup = definition.setup || voidFn;
         this.render = definition.render || voidFn;
@@ -55,8 +56,31 @@ export default class {
     }
 
     onResize() {
-        this.$canvas.width = window.innerWidth * this.density;
-        this.$canvas.height = window.innerHeight * this.density;
+
+        const px = n => n + 'px';
+        
+        let w, h;
+        
+        if (this.aspectRatio !== 'auto') {
+            if (window.innerWidth / window.innerHeight < this.aspectRatio) {
+                w = window.innerWidth;
+                h = window.innerWidth / this.aspectRatio;
+            }
+            else {
+                w = window.innerHeight * this.aspectRatio;
+                h = window.innerHeight;
+            }
+        }
+        else {
+            w = window.innerWidth;
+            h = window.innerHeight;
+        }
+
+        this.$canvas.width = this.canvasWidth;
+        this.$canvas.height = this.canvasWidth / this.aspectRatio;
+
+        this.$canvas.style.width = px(w);
+        this.$canvas.style.height = px(h);
 
         requestAnimationFrame(() => this.render(this.getContext()));
     }
